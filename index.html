@@ -47,7 +47,7 @@
 
     // 🕊️ Slightly larger and centered bird
     let bird = { 
-      x: window.innerWidth / 3, // closer to center (was 120)
+      x: window.innerWidth / 3, 
       y: window.innerHeight / 2, 
       w: 130, 
       h: 130, 
@@ -57,6 +57,11 @@
     let pipes = [];
     let score = 0;
     let gameOver = false;
+
+    // 🌪️ Pipes speed (will increase gradually)
+    let pipeSpeed = 3;         // starting speed
+    const SPEED_INCREASE = 0.05; // per point
+    const MAX_SPEED = 8;         // cap the speed
 
     function drawBird() {
       ctx.drawImage(birdImg, bird.x, bird.y, bird.w, bird.h);
@@ -132,7 +137,8 @@
         spawnPipe();
       }
 
-      for (const p of pipes) p.x -= 3;
+      // Move pipes — use dynamic speed
+      for (const p of pipes) p.x -= pipeSpeed;
 
       const hb = hitbox(bird);
       for (const p of pipes) {
@@ -143,7 +149,12 @@
       }
 
       for (const p of pipes) {
-        if (!p.passed && p.x + PIPE_W < hb.x) { p.passed = true; score++; }
+        if (!p.passed && p.x + PIPE_W < hb.x) { 
+          p.passed = true; 
+          score++; 
+          // 🌀 Increase speed a little after each pipe passed
+          pipeSpeed = Math.min(MAX_SPEED, pipeSpeed + SPEED_INCREASE);
+        }
       }
 
       pipes = pipes.filter(p => p.x + PIPE_W > 0);
@@ -186,6 +197,7 @@
       bird.dy = 0;
       pipes = [];
       score = 0;
+      pipeSpeed = 3; // reset speed
       gameOver = false;
       loop();
     }
@@ -194,4 +206,3 @@
   </script>
 </body>
 </html>
-
