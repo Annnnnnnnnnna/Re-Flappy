@@ -33,7 +33,7 @@
     const GRAVITY  = 0.5;
     const JUMP     = -10;
     const PIPE_W   = 80;
-    const PIPE_GAP = 320;  // 💫 increased from 250 to make it easier
+    const PIPE_GAP = 320;  // more space between pipes
     const CAP_H    = 20;
     const HIT_PAD  = 12;
 
@@ -45,8 +45,14 @@
     const birdImg = new Image();
     birdImg.src = "s.png";
 
-    // 🕊️ Bigger character
-    let bird = { x: 120, y: 200, w: 130, h: 130, dy: 0 };
+    // 🕊️ Slightly larger and centered bird
+    let bird = { 
+      x: window.innerWidth / 3, // closer to center (was 120)
+      y: window.innerHeight / 2, 
+      w: 130, 
+      h: 130, 
+      dy: 0 
+    };
 
     let pipes = [];
     let score = 0;
@@ -176,8 +182,11 @@
     });
 
     function resetGame() {
-      bird.y = 200; bird.dy = 0;
-      pipes = []; score = 0; gameOver = false;
+      bird.y = canvas.height / 2;
+      bird.dy = 0;
+      pipes = [];
+      score = 0;
+      gameOver = false;
       loop();
     }
 
