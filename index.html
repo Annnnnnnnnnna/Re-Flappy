@@ -11,7 +11,7 @@
     }
     canvas {
       display: block;
-      background: url("k.png") center/cover no-repeat; /* background image */
+      background: url("k.png") center/cover no-repeat;
     }
   </style>
 </head>
@@ -33,19 +33,21 @@
     const GRAVITY  = 0.5;
     const JUMP     = -10;
     const PIPE_W   = 80;
-    const PIPE_GAP = 250;
+    const PIPE_GAP = 320;  // 💫 increased from 250 to make it easier
     const CAP_H    = 20;
     const HIT_PAD  = 12;
 
     // Soft lilac pipes
-    const PIPE_FILL = "#e2d4ff"; // gentle pastel purple
-    const PIPE_OUT  = "#b39df3"; // slightly darker outline
+    const PIPE_FILL = "#e2d4ff";
+    const PIPE_OUT  = "#b39df3";
 
     // Character image
     const birdImg = new Image();
     birdImg.src = "s.png";
 
-    let bird = { x: 120, y: 200, w: 100, h: 100, dy: 0 };
+    // 🕊️ Bigger character
+    let bird = { x: 120, y: 200, w: 130, h: 130, dy: 0 };
+
     let pipes = [];
     let score = 0;
     let gameOver = false;
@@ -59,11 +61,9 @@
       ctx.strokeStyle = PIPE_OUT;
       ctx.lineWidth = 2;
 
-      // main body
       ctx.fillRect(x, 0, PIPE_W, height);
       ctx.strokeRect(x, 0, PIPE_W, height);
 
-      // rounded “cap”
       ctx.beginPath();
       ctx.moveTo(x, height);
       ctx.quadraticCurveTo(x + PIPE_W / 2, height + CAP_H, x + PIPE_W, height);
@@ -78,11 +78,9 @@
       ctx.strokeStyle = PIPE_OUT;
       ctx.lineWidth = 2;
 
-      // main body
       ctx.fillRect(x, y, PIPE_W, h);
       ctx.strokeRect(x, y, PIPE_W, h);
 
-      // rounded “cap”
       ctx.beginPath();
       ctx.moveTo(x, y);
       ctx.quadraticCurveTo(x + PIPE_W / 2, y - CAP_H, x + PIPE_W, y);
@@ -100,7 +98,7 @@
 
     function drawScore() {
       ctx.save();
-      ctx.fillStyle = "#000"; // black score text
+      ctx.fillStyle = "#000";
       ctx.font = "32px Arial Black";
       ctx.fillText("Score: " + score, 20, 50);
       ctx.restore();
@@ -121,19 +119,15 @@
     }
 
     function update() {
-      // bird physics
       bird.dy += GRAVITY;
       bird.y  += bird.dy;
 
-      // spawn pipes
       if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 300) {
         spawnPipe();
       }
 
-      // move pipes
       for (const p of pipes) p.x -= 3;
 
-      // collisions
       const hb = hitbox(bird);
       for (const p of pipes) {
         const overlapX = hb.x < p.x + PIPE_W && hb.x + hb.w > p.x;
@@ -142,15 +136,12 @@
         if (overlapX && (hitTop || hitBot)) { gameOver = true; break; }
       }
 
-      // scoring
       for (const p of pipes) {
         if (!p.passed && p.x + PIPE_W < hb.x) { p.passed = true; score++; }
       }
 
-      // cleanup off-screen
       pipes = pipes.filter(p => p.x + PIPE_W > 0);
 
-      // out of bounds
       if (hb.y < 0 || hb.y + hb.h > canvas.height) gameOver = true;
     }
 
@@ -179,7 +170,6 @@
       if (!gameOver) requestAnimationFrame(loop);
     }
 
-    // input
     canvas.addEventListener("click", () => {
       if (gameOver) resetGame();
       else bird.dy = JUMP;
@@ -191,7 +181,6 @@
       loop();
     }
 
-    // start when character image is ready
     birdImg.onload = () => loop();
   </script>
 </body>
